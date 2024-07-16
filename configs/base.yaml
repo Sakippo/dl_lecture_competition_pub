@@ -12,6 +12,19 @@ data_loader:
     shuffle: false
 train:
   no_batch_norm: false
-  initial_learning_rate: 0.01
+  # initial_learning_rate: 0.01
+  initial_learning_rate: 1e-5
   weight_decay: 0.0001
   epochs: 10
+id_4x:
+  name: IDEDEQIDO
+  deblur: true
+  add_delta: true
+  update_iters: 4
+  zero_init: true
+  deq_mode: false
+  input_flowmap: true
+
+  hidden_dim: 128
+  downsample: 4
+  pretrain_ckpt: src/idnetmodels/checkpoints/id-4x.pt

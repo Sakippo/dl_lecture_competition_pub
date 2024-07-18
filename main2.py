@@ -49,10 +49,8 @@ def save_optical_flow_to_npy(flow: torch.Tensor, file_name: str):
 @hydra.main(version_base=None, config_path="configs", config_name="base")
 def main(args: DictConfig):
     set_seed(args.seed)
-    # device = torch.device("mps")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
-    # os.environ['PYTORCH_MPS_HIGH_WATERMARK_RATIO'] = '0.0'
     '''
         ディレクトリ構造:
 
@@ -127,13 +125,8 @@ def main(args: DictConfig):
     # ------------------
     #   optimizer
     # ------------------
-    # optimizer = torch.optim.Adam(model.parameters(), lr=args.train.initial_learning_rate, weight_decay=args.train.weight_decay)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.train.initial_learning_rate, weight_decay=args.train.weight_decay)
-    # optimizer = torch.optim.Adam(self.model.parameters(), lr=self.config.optim.lr)
-    # optimizer.load_state_dict(ckpt['optimizer_state_dict'])
-    #         self.epoch = ckpt['epoch']
-    #         if self.scheduler and 'scheduler_state_dict' in ckpt:
-    #             self.scheduler.load_state_dict(ckpt['scheduler_state_dict'])
+    
     # # ------------------
     # #   Start training
     # # ------------------

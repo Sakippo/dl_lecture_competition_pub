@@ -64,30 +64,6 @@ class IDEDEQIDO(nn.Module):
             [torch.arange(0, H), torch.arange(0, W)], indexing='ij'))
         return torch.stack([j, i], dim=-1).to(device)
     
-    def bilinear_interpolation(self, img, x, y):
-        N, C, H, W = img.shape
-        x0 = torch.floor(x).long()
-        x1 = x0 + 1
-        y0 = torch.floor(y).long()
-        y1 = y0 + 1
-
-        x0 = torch.clamp(x0, 0, W - 1)
-        x1 = torch.clamp(x1, 0, W - 1)
-        y0 = torch.clamp(y0, 0, H - 1)
-        y1 = torch.clamp(y1, 0, H - 1)
-
-        Ia = img[:, :, y0, x0]
-        Ib = img[:, :, y1, x0]
-        Ic = img[:, :, y0, x1]
-        Id = img[:, :, y1, x1]
-
-        wa = (x1.float() - x) * (y1.float() - y)
-        wb = (x1.float() - x) * (y - y0.float())
-        wc = (x - x0.float()) * (y1.float() - y)
-        wd = (x - x0.float()) * (y - y0.float())
-
-        return wa.unsqueeze(1) * Ia + wb.unsqueeze(1) * Ib + wc.unsqueeze(1) * Ic + wd.unsqueeze(1) * Id
-
     def deblur_tensor(self, raw_input, flow, mask=None):
         # raw: [N, T, C, H, W]
         raw = raw_input.unsqueeze(2) if raw_input.ndim == 4 else raw_input
@@ -103,7 +79,6 @@ class IDEDEQIDO(nn.Module):
             sampling_grid[..., 0] = sampling_grid[..., 0] / (W-1) * 2 - 1
             sampling_grid[..., 1] = sampling_grid[..., 1] / (H-1) * 2 - 1
 
-            y = (y + 1) * 0.5 * (H - 1)
             deblurred_tensor[:, t,
                              ] = grid_sample(raw[:, t, ], sampling_grid, align_corners=False)
 
